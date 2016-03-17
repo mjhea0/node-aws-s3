@@ -73,11 +73,12 @@ app.post('/upload', upload.any(), function (req, res, next) {
   var filePath = path.join(__dirname, '../client/uploads/', uploadedFile.originalname);
 
   // read file, send to s3
-  fs.readFile(filePath, 'utf-8', function (err, fileBuffer) {
+  fs.readFile(filePath, function (err, fileBuffer) {
     var params = {
       Bucket: 'galvanize-test',
       Key: uploadedFile.filename,
-      Body: fileBuffer
+      Body: fileBuffer,
+      ACL:'public-read-write' // who has access
     };
     s3.putObject(params, function (err, data) {
       if(err) {
